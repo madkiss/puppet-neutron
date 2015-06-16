@@ -240,6 +240,10 @@ class neutron::server (
     } else {
       fail('min_l3_agents_per_router should be less than or equal to max_l3_agents_per_router.')
     }
+  } else {
+      neutron_config {
+        'DEFAULT/l3_ha':                    value => false;
+      }
   }
 
   if $mysql_module {
@@ -331,6 +335,7 @@ class neutron::server (
       require     => Neutron_config['database/connection'],
       refreshonly => true
     }
+    Neutron_config<||> ~> Exec['neutron-db-sync']
   }
 
   neutron_config {
